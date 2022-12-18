@@ -1,0 +1,93 @@
+﻿@page "/"
+@layout MainLayout
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Rummy.App.Model;
+
+
+
+<div class="grid">
+    <div>
+        <QuickGrid Items="@PlayersQueryable" ResizableColumns="true">
+            <PropertyColumn Title="Navn" Property="@(p => p.Name)" />
+            <TemplateColumn Title="To tres">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.TwoThreeOfAKindScore"></InputNumber>
+            </TemplateColumn>
+            <TemplateColumn Title="Ett tress og én stige">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.OneThreeOfAKindAndOneLadderScore"></InputNumber>
+            </TemplateColumn>
+            <TemplateColumn Title="Tre tress">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.ThreeThreeOfAKindScoreScore"></InputNumber>
+            </TemplateColumn>
+            <TemplateColumn Title="To tress og én stige">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.TwoThreeOfAKindAndOneLadderScore"></InputNumber>
+            </TemplateColumn>
+            <TemplateColumn Title="Ett tress og to stiger">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.OneThreeOfAKindAndTwoLaddersScore"></InputNumber>
+            </TemplateColumn>
+            <TemplateColumn Title="Tre stiger">
+                <InputNumber class="form-control" placeholder="–" @bind-Value="context.ThreeLaddersScore"></InputNumber>
+            </TemplateColumn>
+            <PropertyColumn Title="Poeng totalt" Property="@(p => p.Score)" Sortable="true" Align="Align.Right" />
+            <TemplateColumn>
+                <button @onclick="@(e => RemovePlayer(context))" type="button" class="btn btn-danger">Fjern spiller</button>
+            </TemplateColumn>
+        </QuickGrid>
+        <div class="mt-4 d-block w-25">
+            <InputText class="block form-control" placeholder="Navn" @bind-Value="NewPlayerName"></InputText>
+            <button @onclick="AddPlayer" type="button" class="btn btn-primary mt-2 w-100"> Legg til spiller</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<PlayerDto> Players = new List<PlayerDto>
+        {
+        new PlayerDto
+        {
+            Name = "Øystein",
+        },
+        new PlayerDto
+        {
+            Name = "Veslemøy",
+        },
+        new PlayerDto
+        {
+            Name = "Gunnar",
+        }
+    };
+
+    bool ShowConfirm = false;
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
+
+    IQueryable<PlayerDto> PlayersQueryable => Players.AsQueryable();
+
+    public string NewPlayerName { get; set; }
+
+    private void AddPlayer()
+    {
+        Players.Add(
+            new PlayerDto
+                {
+                    Name = NewPlayerName
+                });
+        NewPlayerName = "";
+    }
+
+    private async void RemovePlayer(PlayerDto playerDto)
+    {
+        Console.WriteLine("Here");
+        Players.Remove(playerDto);
+
+        var moviesModal = Modal.Show<ScoreTable>("My Movies"); // Må lage noe for confirm
+        var result = await moviesModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else if (result.Confirmed)
+        {
+            Console.WriteLine("Modal was closed");
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿/* Assign default width to country name column */
+.grid {
+    display: flex;
+    justify-content: center;
+}
+
+::deep thead {
+    width: 15rem;
+}
+
+::deep table {
+    table-layout: auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+::deep td {
+    border: 1px solid #ccc;
+}
+
+/* Stop country name text from wrapping, and truncate with ellipsis */
+::deep tbody {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0;
+    text-overflow: ellipsis;
+}
+
+/* Stop the last page from collapsing to the number of rows on it */
+::deep tr {
+    height: 2.8rem;
+}
+
+    /* Subtle stripe effect */
+    ::deep tr:nth-child(even) {
+        background: rgba(255,255,255,1.4);
+    }
