@@ -78,7 +78,7 @@
         Console.WriteLine("Here");
         Players.Remove(playerDto);
 
-        var moviesModal = Modal.Show<ScoreTable>("My Movies"); // Må lage noe for confirm
+        var moviesModal = Modal.Show<RemovePlayer>("Remove player");
         var result = await moviesModal.Result;
 
         if (result.Cancelled)
